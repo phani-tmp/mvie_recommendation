@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
 import pickle
 import requests
-
+import lzma
 app = Flask(__name__)
 
 # Load the movie list and similarity matrix
-movies = pickle.load(open('model/movie_list.pkl', 'rb'))
-similarity = pickle.load(open('model/similarity.pkl', 'rb'))
+movies = pickle.load(open('movie_list.pkl', 'rb'))
+with lzma.open('similarity.pkl.xz', 'rb') as f:
+    similarity = pickle.load(f)
 
 def fetch_poster(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(movie_id)
