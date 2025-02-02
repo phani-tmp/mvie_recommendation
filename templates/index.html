@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Recommender System</h1>
+        <form method="POST">
+            <label for="movie_search">Type a movie name:</label>
+            <input type="text" id="movie_search" name="selected_movie" placeholder="Start typing a movie name..." autocomplete="off">
+            <div id="movie_suggestions"></div>
+            <button type="submit">Show Recommendation</button>
+        </form>
+
+        {% if recommended_movie_names %}
+        <div class="recommendations">
+            <h2>Recommended Movies:</h2>
+            <div class="movie-grid">
+                {% for i in range(5) %}
+                <div class="movie">
+                    <img src="{{ recommended_movie_posters[i] }}" alt="{{ recommended_movie_names[i] }}">
+                    <p>{{ recommended_movie_names[i] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const movieSearch = document.getElementById('movie_search');
+        const movieSuggestions = document.getElementById('movie_suggestions');
+        const movieList = {{ movie_list | tojson | safe }};
+
+        movieSearch.addEventListener('input', function() {
+            const searchTerm = movieSearch.value.toLowerCase();
+            const filteredMovies = movieList.filter(movie => movie.toLowerCase().includes(searchTerm));
+            movieSuggestions.innerHTML = '';
+
+            if (searchTerm.length > 0) {
+                filteredMovies.forEach(movie => {
+                    const suggestion = document.createElement('div');
+                    suggestion.textContent = movie;
+                    suggestion.classList.add('suggestion');
+                    suggestion.addEventListener('click', function() {
+                        movieSearch.value = movie;
+                        movieSuggestions.innerHTML = '';
+                    });
+                    movieSuggestions.appendChild(suggestion);
+                });
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target !== movieSearch) {
+                movieSuggestions.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

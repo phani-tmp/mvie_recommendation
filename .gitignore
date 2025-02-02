@@ -1,0 +1,16 @@
+# Ignore large files
+model/*.pkl
+*.zip
+*.csv
+*.h5
+*.pt
+
+# Ignore virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.env
